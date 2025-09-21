@@ -1,0 +1,11 @@
+/* src/App.css */
+
+.card-image-wrapper {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+.card-wrapper:hover .card-image-wrapper {
+  transform: translateY(-8px);
+}
+.card-wrapper.active:hover .card-image-wrapper {
+  box-shadow: 0 10px 15px -3px rgba(33, 169, 237, 0.2), 0 4px 6px -4px rgba(33, 169, 237, 0.2);
+}
