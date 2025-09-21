@@ -2,11 +2,12 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Header from './Header';
 
 const OceanReports = () => {
     return (
         <div className="flex flex-col min-h-screen bg-white font-display text-slate-800">
-            {/* ... baaki code same hai ... */}
+           <Header/>
             <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex-grow">
                 <div className="max-w-5xl mx-auto">
                     {/* ... baaki code same hai ... */}
@@ -25,7 +26,7 @@ const OceanReports = () => {
                                     <div className="mt-auto">
                                         <Link 
                                             to="/report/arabian-sea" 
-                                            className="w-full bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 focus:ring-offset-background-light transition-all inline-block text-center"
+                                            className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-[#21a9ed] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#21a9ed]/50 focus:ring-offset-background-light transition-all inline-block text-center"
                                         >
                                             Open Report
                                         </Link>
@@ -48,7 +49,7 @@ const OceanReports = () => {
                                     <div className="mt-auto">
                                         <Link 
                                             to="/report/bay-of-bengal" 
-                                            className="w-full bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 focus:ring-offset-background-light transition-all inline-block text-center"
+                                            className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-[#21a9ed] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#21a9ed]/50 focus:ring-offset-background-light transition-all inline-block text-center"
                                         >
                                             Open Report
                                         </Link>
@@ -71,7 +72,7 @@ const OceanReports = () => {
                                     <div className="mt-auto">
                                         <Link 
                                             to="/report/indian-ocean" 
-                                            className="w-full bg-primary text-white font-semibold py-2 px-4 rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 focus:ring-offset-background-light transition-all inline-block text-center"
+                                            className="w-full bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-[#21a9ed] hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#21a9ed]/50 focus:ring-offset-background-light transition-all inline-block text-center"
                                         >
                                             Open Report
                                         </Link>

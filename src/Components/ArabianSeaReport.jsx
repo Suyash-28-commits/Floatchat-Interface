@@ -10,7 +10,7 @@ const ArabianSeaReport = () => {
     const handleDownload = () => {
         const link = document.createElement('a');
         if (activeTab === 'statistical') {
-            link.href = '/Arabian_sea .html';
+            link.href = '/Arabian_Sea_Statistical.html'; // Path fixed
             link.download = 'Arabian_Sea_Statistical_Report.html';
         } else {
             alert('Download for geographical reports is not yet implemented.');
@@ -105,7 +105,7 @@ const ArabianSeaReport = () => {
 
                     <div className="w-full h-[80vh] bg-background-light dark:bg-subtle-dark border border-subtle-light dark:border-subtle-dark rounded-xl shadow-lg overflow-hidden">
                         {activeTab === 'statistical' ? (
-                            <iframe className="w-full h-full border-0" src="/Arabian_sea .html" title="Arabian Sea Statistical Report"></iframe>
+                            <iframe className="w-full h-full border-0" src="/Arabian_Sea_Statistical.html" title="Arabian Sea Statistical Report"></iframe>
                         ) : (
                             <ArabianSeaGeographicalContent />
                         )}

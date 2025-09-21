@@ -1,6 +1,7 @@
 import Header from "../Components/Header";
 import { Link } from "react-router-dom";
 
+
 export default function ExploreOptions() {
   // Hardcode your deployed URLs here:
   const CHATBOT_URL = "https://frolicking-cobbler-92c2c3.netlify.app/";
@@ -9,7 +10,7 @@ export default function ExploreOptions() {
   return (
     <div className="bg-[#f6f7f8] min-h-screen text-gray-800">
             
-
+      <Header/>
       <main className="max-w-4xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <h2 className="text-3xl font-bold text-center mb-12">Choose an experience</h2>
 
