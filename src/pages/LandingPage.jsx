@@ -1,139 +1,152 @@
-import { MapContainer, TileLayer, Marker, Tooltip, Popup } from "react-leaflet";
-import { useNavigate } from "react-router-dom";
-import L from "leaflet";
-import { regions } from "../utils/dummyData";
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import Globe from 'react-globe.gl';
+import * as THREE from 'three';
 
-const getRegionCenter = (regionId) => {
-  const centers = {
-    "arabian-sea": [15, 64],
-    "bay-of-bengal": [15, 89],
-    "indian-ocean": [-2, 72],
-  };
-  return centers[regionId];
-};
+// India ke coordinates
+const INDIA_COORDS = { lat: 20.5937, lng: 78.9629 };
 
-// More floats & different densities
-const REGION_FLOATS = {
-  "arabian-sea": 20,
-  "bay-of-bengal": 25,
-  "indian-ocean": 30,
-};
+// Oceans ke exact coordinates aur naye colors
+const OCEAN_DATA = [
+  { lat: 15.5, lng: 65, name: 'Arabian Sea', color: '#ffeb3b' }, // Bright yellow
+  { lat: 15.5, lng: 88, name: 'Bay of Bengal', color: '#00e5ff' }, // Neon cyan
+  { lat: 5, lng: 75, name: 'Indian Ocean', color: '#ffffff' }, // White
+];
 
-const REGION_RADIUS = {
-  "arabian-sea": 1.0,
-  "bay-of-bengal": 1.2,
-  "indian-ocean": 1.5,
-};
-
-// Different float colors per region
-const REGION_COLOR = {
-  "arabian-sea": "#21a9ed",   // teal blue
-  "bay-of-bengal": "#34d399", // green
-  "indian-ocean": "#a855f7",  // purple
-};
-
-// Generate N scattered offsets
-const generateOffsets = (count, radius) => {
-  return Array.from({ length: count }, () => {
-    const angle = Math.random() * 360;
-    const r = Math.random() * radius;
-    const rad = (angle * Math.PI) / 180;
-    return {
-      dLat: r * Math.sin(rad),
-      dLon: r * Math.cos(rad),
-    };
-  });
-};
-
-// Function to build float icon by color
-const makeFloatIcon = (color) =>
-  L.divIcon({
-    className: "argo-float-icon",
-    html: `<div class="argo-float-dot" style="background:${color}; box-shadow:0 0 10px ${color};"></div>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-  });
-
-export default function LandingPage() {
+const LandingPage = () => {
+  const globeEl = useRef();
   const navigate = useNavigate();
+  const [isGlobeClicked, setIsGlobeClicked] = useState(false);
+  const [indiaPolygons, setIndiaPolygons] = useState([]);
+  const [showExploreButton, setShowExploreButton] = useState(false);
+  const lngRef = useRef(0);
+  const floatAltRef = useRef(0);
+
+  useEffect(() => {
+    // India ka GeoJSON data fetch kar rahe hain
+    fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries/IND.geo.json')
+      .then(res => res.json())
+      .then(data => {
+        setIndiaPolygons(data.features || []);
+      });
+
+    // Globe aur floats ko animate karne ke liye
+    let autoRotate = true;
+    const rotationSpeed = 0.005;
+    
+    const animate = () => {
+      if (autoRotate && globeEl.current && !isGlobeClicked) {
+        lngRef.current += rotationSpeed;
+        globeEl.current.pointOfView({
+            lng: lngRef.current,
+            lat: 0,
+            altitude: 1.5,
+        });
+      }
+      // Floating animation for points
+      floatAltRef.current = Math.sin(Date.now() * 0.002) * 0.005;
+      
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => autoRotate = false;
+  }, [isGlobeClicked]);
+
+  const handleGlobeClick = () => {
+    if (!isGlobeClicked) {
+      globeEl.current.pointOfView({
+        lat: INDIA_COORDS.lat, 
+        lng: INDIA_COORDS.lng, 
+        altitude: 0.8
+      }, 2000);
+      
+      setIsGlobeClicked(true);
+      
+      setTimeout(() => {
+          setShowExploreButton(true);
+      }, 2000);
+    }
+  };
+
+  const handleExploreData = () => {
+    navigate('/explore');
+  };
+
+  const oceanFloatsData = OCEAN_DATA.flatMap(ocean => 
+      Array.from({ length: 7 }).map(() => ({
+          lat: ocean.lat + (Math.random() - 0.5) * 5,
+          lng: ocean.lng + (Math.random() - 0.5) * 5,
+          color: ocean.color
+      }))
+  );
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-gradient-to-b from-sky-100 via-sky-200 to-sky-300">
-      <h1 className="absolute top-8 left-1/2 -translate-x-1/2 text-3xl md:text-5xl z-[1000] text-center font-extrabold text-slate-900 drop-shadow-lg">
-        Explore India’s Ocean Data
-      </h1>
+    <motion.div
+      className="landing-page-container w-screen h-screen relative overflow-hidden cursor-pointer"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 1, ease: "easeInOut" }}
+    >
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-100 to-fuchsia-100"></div>
 
-      <MapContainer
-        center={[20.5937, 78.9629]}
-        zoom={5}
-        minZoom={4}
-        maxZoom={6}
-        className="w-full h-full z-10"
-        zoomControl={false}
-        attributionControl={false}
-        scrollWheelZoom
-      >
-        <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] rounded-full filter blur-[150px] opacity-70" style={{ backgroundImage: 'linear-gradient(to bottom right, #00c6ff, #0d6efd)' }}></div>
+      
+      <div className="relative z-10 w-full h-full">
+        <Globe
+          ref={globeEl}
+          globeImageUrl="//unpkg.com/three-globe@2.30.0/example/img/earth-day.jpg"
+          bumpImageUrl="//unpkg.com/three-globe@2.30.0/example/img/earth-topology.png"
+          backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+          atmosphereColor="#00c6ff"
+          atmosphereAltitude={0.2}
+          onGlobeClick={handleGlobeClick}
+          
+          polygonsData={indiaPolygons}
+          polygonCapColor={() => 'rgba(255, 255, 255, 0.4)'}
+          polygonSideColor={() => 'rgba(255, 255, 255, 0.2)'}
+          polygonStrokeColor={() => '#ffffff'}
 
-        {/* Region labels */}
-        {regions.map((region) => (
-          <Marker
-            key={`label-${region.id}`}
-            position={getRegionCenter(region.id)}
-            icon={L.divIcon({
-              className: "custom-label-icon",
-              html: `<div style="color:black; font-weight:800; font-size:20px; text-shadow:1px 1px 3px white">${region.name}</div>`,
-              iconSize: [200, 20],
-            })}
-            interactive={false}
-          />
-        ))}
+          labelsData={isGlobeClicked ? OCEAN_DATA : []}
+          labelLat={d => d.lat}
+          labelLng={d => d.lng}
+          labelText={d => d.name}
+          labelSize={0.8}
+          labelColor={d => d.color}
+          labelDotRadius={0.4}
+          labelResolution={2}
+          labelAltitude={0.01}
 
-        {/* Scattered ARGO floats */}
-        {regions.flatMap((region) => {
-          const [lat, lon] = getRegionCenter(region.id);
-          const count = REGION_FLOATS[region.id];
-          const radius = REGION_RADIUS[region.id];
-          const color = REGION_COLOR[region.id];
-          const offsets = generateOffsets(count, radius);
+          pointsData={isGlobeClicked ? oceanFloatsData : []}
+          pointLat={d => d.lat}
+          pointLng={d => d.lng}
+          pointColor={d => d.color}
+          pointAltitude={() => floatAltRef.current}
+          pointRadius={0.2}
+        />
 
-          return offsets.map((o, idx) => {
-            const pos = [lat + o.dLat, lon + o.dLon];
-            return (
-              <Marker
-                key={`float-${region.id}-${idx}`}
-                position={pos}
-                icon={makeFloatIcon(color)}
-                zIndexOffset={500}
+        <AnimatePresence>
+          {showExploreButton && (
+            <motion.div
+              className="absolute bottom-10 inset-x-0 mx-auto z-20 flex justify-center w-full"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <button
+                onClick={handleExploreData}
+                className="explore-button px-10 py-4 text-xl font-bold text-white bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full shadow-lg hover:scale-105 transition-all duration-300"
               >
-                <Tooltip direction="top" offset={[0, -8]} opacity={0.95}>
-                  <div className="text-sm">
-                    <div className="font-semibold">ARGO Float</div>
-                    <div>{region.name}</div>
-                  </div>
-                </Tooltip>
-                <Popup>
-                  <div className="text-sm">
-                    <div className="font-semibold">{region.name}</div>
-                    <div>Source: ARGO Program</div>
-                    <div className="mt-1 text-gray-600">~{1000 + Math.floor(Math.random()*500)} datapoints</div>
-                  </div>
-                </Popup>
-              </Marker>
-            );
-          });
-        })}
-      </MapContainer>
-
-      {/* Explore CTA */}
-      <div className="absolute top-1/2 right-8 -translate-y-1/2 z-[1000]">
-        <button
-          className="bg-slate-900 text-white rounded-2xl px-6 py-4 font-bold text-lg hover:bg-slate-800 transition-all duration-300 transform hover:scale-110 shadow-xl"
-          onClick={() => navigate("/explore")}
-        >
-          Explore Data
-        </button>
+                Explore Data
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
+
+export default LandingPage;
