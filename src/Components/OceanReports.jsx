@@ -12,10 +12,12 @@ const OceanReports = () => {
         autoPlay
         loop
         muted
-        className="absolute top-0 left-0 w-full h-full object-cover z-0 filter backdrop-brightness-125 opacity-75"
+        className="absolute top-0 left-0 w-full h-full object-cover z-0"
       >
         <source src="/vid1.mp4" type="video/mp4" />
       </video>
+      {/* Added: Blue overlay with blur on the background video */}
+      <div className="absolute inset-0 bg-blue-800/40 backdrop-blur-sm z-0"></div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -31,17 +33,17 @@ const OceanReports = () => {
               {/* Arabian Sea Card */}
               <div className="group card-wrapper">
                 <div className="relative border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all h-full flex flex-col backdrop-blur-lg bg-white/5 overflow-hidden">
-                  <div className="relative card-video-wrapper">
+                  <div className="card-video-wrapper">
                     <video
                       autoPlay
                       loop
                       muted
-                      className="aspect-square w-full object-cover"
+                      // Changed: Reverted to just opacity
+                      className="aspect-square w-full object-cover opacity-70"
                     >
                       <source src="/Arabian.mp4" type="video/mp4" />
                     </video>
-                    {/* Changed: Opacity of the overlay is now bg-black/20 */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+                    {/* Removed: The overlay div from here */}
                   </div>
                   <div className="p-5 flex-grow flex flex-col text-white">
                     <div className="flex justify-between items-start mb-2">
@@ -65,17 +67,17 @@ const OceanReports = () => {
               {/* Bay of Bengal Card */}
               <div className="group card-wrapper">
                 <div className="relative border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all h-full flex flex-col backdrop-blur-lg bg-white/5 overflow-hidden">
-                  <div className="relative card-video-wrapper">
+                  <div className="card-video-wrapper">
                     <video
                       autoPlay
                       loop
                       muted
-                      className="aspect-square w-full object-cover"
+                      // Changed: Reverted to just opacity
+                      className="aspect-square w-full object-cover opacity-70"
                     >
                       <source src="/Bay.mp4" type="video/mp4" />
                     </video>
-                    {/* Changed: Opacity of the overlay is now bg-black/20 */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+                    {/* Removed: The overlay div from here */}
                   </div>
                   <div className="p-5 flex-grow flex flex-col text-white">
                     <div className="flex justify-between items-start mb-2">
@@ -99,17 +101,17 @@ const OceanReports = () => {
               {/* Indian Ocean Card */}
               <div className="group card-wrapper">
                 <div className="relative border border-white/20 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all h-full flex flex-col backdrop-blur-lg bg-white/5 overflow-hidden">
-                  <div className="relative card-video-wrapper">
+                  <div className="card-video-wrapper">
                     <video
                       autoPlay
                       loop
                       muted
-                      className="aspect-square w-full object-cover"
+                      // Changed: Reverted to just opacity
+                      className="aspect-square w-full object-cover opacity-70"
                     >
                       <source src="/Indian.mp4" type="video/mp4" />
                     </video>
-                    {/* Changed: Opacity of the overlay is now bg-black/20 */}
-                    <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div>
+                    {/* Removed: The overlay div from here */}
                   </div>
                   <div className="p-5 flex-grow flex flex-col text-white">
                     <div className="flex justify-between items-start mb-2">
